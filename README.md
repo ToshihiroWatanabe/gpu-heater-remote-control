@@ -18,4 +18,4 @@ npm install
 npm run dev
 ```
 
-`http://<PCのローカルIPアドレス>:3000`にアクセス
+`http://<PCのローカルIPアドレス>:<ポート>`にアクセス

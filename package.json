@@ -3,10 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -p %npm_package_config_PORT%",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
+  },
+  "config": {
+    "PORT": 9410
   },
   "dependencies": {
     "@next/font": "13.0.7",

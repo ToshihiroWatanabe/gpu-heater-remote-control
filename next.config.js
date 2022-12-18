@@ -18,6 +18,9 @@ const nextConfig = {
   publicRuntimeConfig: {
     ipAddress: getIpAddress(),
   },
+  env: {
+    PORT: process.env.npm_package_config_PORT,
+  },
 };
 
 module.exports = nextConfig;

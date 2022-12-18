@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 
 const { publicRuntimeConfig } = getConfig();
 
-const URL_ORIGIN = "http://" + publicRuntimeConfig.ipAddress + ":3000";
+const URL_ORIGIN = `http://${publicRuntimeConfig.ipAddress}:${process.env.PORT}`;
 
 /** 一度に上下するワット数 */
 const WATT_INTERVAL = 50;
