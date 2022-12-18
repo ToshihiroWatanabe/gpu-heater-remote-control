@@ -4,7 +4,7 @@ GPUを暖房として使うためのリモコンです。
 
 スマホ等からGPUの電力制限ができます。
 
-対象: nVIDIA製のGPUを1台搭載したWindows PC
+対象: nVIDIA製のGPUを1枚搭載したWindows PC
 
 事前にPCのローカルIPアドレスを固定しておくと便利です。
 
