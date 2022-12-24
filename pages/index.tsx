@@ -7,25 +7,14 @@ const { publicRuntimeConfig } = getConfig();
 
 const URL_ORIGIN = `http://${publicRuntimeConfig.ipAddress}:${process.env.PORT}`;
 
-/** 一度に上下するワット数 */
-const WATT_INTERVAL = 50;
-
-const buttonStyle = {
-  fontSize: "3rem",
-  width: "6rem",
-  height: "6rem",
-  display: "inline-flex",
-  justifyContent: "center",
-  alignItems: "center",
-  borderRadius: "3rem",
-};
-
 export default function Index() {
   const [gpuCurrentTemp, setGpuCurrentTemp] = useState<number>(NaN);
   const [powerDraw, setPowerDraw] = useState<number>(NaN);
   const [powerLimit, setPowerLimit] = useState<number>(NaN);
   const [minPowerLimit, setMinPowerLimit] = useState<number>(NaN);
   const [maxPowerLimit, setMaxPowerLimit] = useState<number>(NaN);
+  const [temporaryRangeInputValue, setTemporaryRangeInputValue] =
+    useState<number>(NaN);
 
   useEffect(() => {
     fetchInfo();
@@ -40,23 +29,20 @@ export default function Index() {
       setMaxPowerLimit(res.data.maxPowerLimit);
     });
   };
-
-  const onMinusButtonClick = () => {
-    if (powerLimit - minPowerLimit < WATT_INTERVAL) {
-      return;
-    }
-
-    axios.get(`${URL_ORIGIN}/api/pl/${powerLimit - WATT_INTERVAL}`).then(() => {
-      fetchInfo();
-    });
+  const onRangeInputFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+    setTemporaryRangeInputValue(parseInt(e.target.value));
   };
-  const onPlusButtonClick = () => {
-    if (maxPowerLimit - powerLimit < WATT_INTERVAL) {
-      return;
-    }
-    axios.get(`${URL_ORIGIN}/api/pl/${powerLimit + WATT_INTERVAL}`).then(() => {
-      fetchInfo();
-    });
+  const onRangeInputBlur = () => {
+    setTemporaryRangeInputValue(NaN);
+  };
+  const onRangeInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    axios
+      .get(`${URL_ORIGIN}/api/pl/${e.target.value}`, {
+        responseType: "text",
+      })
+      .then(() => {
+        fetchInfo();
+      });
   };
 
   return (
@@ -80,16 +66,49 @@ export default function Index() {
           </div>
         </div>
         <h1>電力制限</h1>
-        <p style={{ fontSize: "5rem", margin: "0" }}>
+        <p style={{ fontSize: "5rem", margin: "-1rem 0 -1rem 0" }}>
           {powerLimit > 0 ? powerLimit + "W" : "取得中"}
         </p>
-        <button style={buttonStyle} onClick={() => onMinusButtonClick()}>
-          －
-        </button>
-        <span style={{ margin: "1rem" }}></span>
-        <button style={buttonStyle} onClick={() => onPlusButtonClick()}>
-          ＋
-        </button>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            flexDirection: "column",
+          }}
+        >
+          <div style={{ height: "1rem", marginBottom: "1rem" }}>
+            {temporaryRangeInputValue > 0 && temporaryRangeInputValue}
+          </div>
+          <input
+            onInput={(e: React.FocusEvent<HTMLInputElement>) =>
+              onRangeInputFocus(e)
+            }
+            onBlur={() => onRangeInputBlur()}
+            onChange={(e) => onRangeInputChange(e)}
+            disabled={!(powerLimit > 0)}
+            type="range"
+            defaultValue={powerLimit > 0 ? powerLimit : undefined}
+            min={minPowerLimit > 0 ? minPowerLimit : undefined}
+            max={maxPowerLimit > 0 ? maxPowerLimit : undefined}
+            step="5"
+            list="tickmarks"
+            style={{ width: "240px", margin: "0" }}
+          />
+          <datalist
+            id="tickmarks"
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "space-between",
+              writingMode: "vertical-lr",
+              width: "240px",
+              padding: "0",
+            }}
+          >
+            <option label="低"></option>
+            <option label="高"></option>
+          </datalist>
+        </div>
       </main>
     </>
   );
