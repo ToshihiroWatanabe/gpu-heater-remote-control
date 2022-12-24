@@ -2,3 +2,15 @@ main {
     text-align: center;
     margin: auto;
 }
+
+.form-range::-webkit-slider-thumb {
+    background: #f5641c;
+}
+
+.form-range::-moz-range-thumb {
+    background: #f5641c;
+}
+
+.form-range::-ms-thumb {
+    background: #f5641c;
+}

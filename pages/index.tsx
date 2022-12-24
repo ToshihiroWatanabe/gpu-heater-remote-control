@@ -93,6 +93,7 @@ export default function Index() {
             step="5"
             list="tickmarks"
             style={{ width: "240px", margin: "0" }}
+            className="form-range"
           />
           <datalist
             id="tickmarks"
