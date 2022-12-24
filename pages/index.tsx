@@ -5,7 +5,9 @@ import { useEffect, useState } from "react";
 
 const { publicRuntimeConfig } = getConfig();
 
-const URL_ORIGIN = `http://${publicRuntimeConfig.ipAddress}:${process.env.PORT}`;
+const axiosInstance = axios.create({
+  baseURL: `http://${publicRuntimeConfig.ipAddress}:${process.env.PORT}`,
+});
 
 export default function Index() {
   const [gpuCurrentTemp, setGpuCurrentTemp] = useState<number>(NaN);
@@ -15,14 +17,14 @@ export default function Index() {
   const [maxPowerLimit, setMaxPowerLimit] = useState<number>(NaN);
   const [temporaryRangeInputValue, setTemporaryRangeInputValue] =
     useState<number>(NaN);
-  const [rangeInputValue, setRangeInputValue] = useState<number>(NaN);
+  const [rangeInputValue, setRangeInputValue] = useState<number>(50);
 
   useEffect(() => {
     fetchInfo();
   }, []);
 
   const fetchInfo = () => {
-    axios.get(`${URL_ORIGIN}/api/info`).then((res: AxiosResponse<Info>) => {
+    axiosInstance.get("/api/info").then((res: AxiosResponse<Info>) => {
       setGpuCurrentTemp(res.data.gpuCurrentTemp);
       setPowerDraw(res.data.powerDraw);
       setPowerLimit(res.data.powerLimit);
@@ -39,8 +41,8 @@ export default function Index() {
     setTemporaryRangeInputValue(NaN);
   };
   const onRangeInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    axios
-      .get(`${URL_ORIGIN}/api/pl/${e.target.value}`, {
+    axiosInstance
+      .get(`/api/pl/${e.target.value}`, {
         responseType: "text",
       })
       .then(() => {
