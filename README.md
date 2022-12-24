@@ -27,3 +27,6 @@ npm run dev
 
 起動後、`http://<PCのローカルIPアドレス>:<ポート>`にアクセスしてください。
 
+# License
+
+MIT
