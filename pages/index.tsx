@@ -15,6 +15,7 @@ export default function Index() {
   const [maxPowerLimit, setMaxPowerLimit] = useState<number>(NaN);
   const [temporaryRangeInputValue, setTemporaryRangeInputValue] =
     useState<number>(NaN);
+  const [rangeInputValue, setRangeInputValue] = useState<number>(NaN);
 
   useEffect(() => {
     fetchInfo();
@@ -27,9 +28,11 @@ export default function Index() {
       setPowerLimit(res.data.powerLimit);
       setMinPowerLimit(res.data.minPowerLimit);
       setMaxPowerLimit(res.data.maxPowerLimit);
+      setRangeInputValue(res.data.powerLimit);
     });
   };
   const onRangeInputFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+    setRangeInputValue(parseInt(e.target.value));
     setTemporaryRangeInputValue(parseInt(e.target.value));
   };
   const onRangeInputBlur = () => {
@@ -92,7 +95,7 @@ export default function Index() {
             onChange={(e) => onRangeInputChange(e)}
             disabled={!(powerLimit > 0)}
             type="range"
-            defaultValue={powerLimit > 0 ? powerLimit : undefined}
+            value={rangeInputValue > 0 ? rangeInputValue : undefined}
             min={minPowerLimit > 0 ? minPowerLimit : undefined}
             max={maxPowerLimit > 0 ? maxPowerLimit : undefined}
             step="5"
