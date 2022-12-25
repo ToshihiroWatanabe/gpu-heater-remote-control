@@ -42,7 +42,7 @@ export default function Index() {
   };
   const onRangeInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     axiosInstance
-      .get(`/api/pl/${e.target.value}`, {
+      .get(`/api/pl?watt=${e.target.value}`, {
         responseType: "text",
       })
       .then(() => {
