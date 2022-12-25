@@ -1,7 +1,7 @@
 import Head from "next/head";
 import axios, { AxiosResponse } from "axios";
 import getConfig from "next/config";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -9,9 +9,8 @@ const axiosInstance = axios.create({
   baseURL: `http://${publicRuntimeConfig.ipAddress}:${process.env.PORT}`,
 });
 
-let powerLimitRequestQueueCount = 0;
-
 export default function Index() {
+  const abortControllerRef = useRef(new AbortController());
   const [gpuCurrentTemp, setGpuCurrentTemp] = useState<number>(NaN);
   const [powerDraw, setPowerDraw] = useState<number>(NaN);
   const [powerLimit, setPowerLimit] = useState<number>(NaN);
@@ -35,6 +34,7 @@ export default function Index() {
       setRangeInputValue(res.data.powerLimit);
     });
   };
+
   const onRangeInputFocus = (e: React.FocusEvent<HTMLInputElement>) => {
     setRangeInputValue(parseInt(e.target.value));
     setTemporaryRangeInputValue(parseInt(e.target.value));
@@ -43,25 +43,20 @@ export default function Index() {
     setTemporaryRangeInputValue(NaN);
   };
   const onRangeInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    powerLimitRequestQueueCount += 1;
-    // レスポンスを受け取る順番が前後しないようにするための遅延
-    if (powerLimitRequestQueueCount >= 2) {
-      await new Promise((resolve) =>
-        setTimeout(resolve, powerLimitRequestQueueCount * 10)
-      );
+    for (let i = 0; i < 10; i++) {
+      abortControllerRef.current.abort();
+      await new Promise((resolve) => setTimeout(resolve, 10));
     }
-
+    abortControllerRef.current = new AbortController();
     axiosInstance
       .get(`/api/pl?watt=${e.target.value}`, {
         responseType: "text",
+        signal: abortControllerRef.current.signal,
       })
       .then(() => {
-        // すべてのリクエストを送信し終えてから情報を取得
-        powerLimitRequestQueueCount -= 1;
-        if (powerLimitRequestQueueCount == 0) {
-          fetchInfo();
-        }
-      });
+        fetchInfo();
+      })
+      .catch((e) => {});
   };
 
   return (
