@@ -73,21 +73,31 @@ export default function Index() {
         />
         <link rel="manifest" href="/site.webmanifest"></link>
       </Head>
-      <main>
+      <main style={{ height: "100vh" }}>
         <div style={{ display: "flex", justifyContent: "center" }}>
-          <div style={{ margin: "1rem" }}>
+          <div style={{ margin: "1rem 1rem 0 1rem" }}>
             <p>GPU温度</p>
             <p style={{ marginTop: "-1rem" }}>
               {gpuCurrentTemp > 0 ? gpuCurrentTemp + "℃" : "取得中"}
             </p>
           </div>
-          <div style={{ margin: "1rem" }}>
+          <div style={{ margin: "1rem 1rem 0 1rem" }}>
             <p>消費電力</p>
             <p style={{ marginTop: "-1rem" }}>
               {powerDraw > 0 ? powerDraw + "W" : "取得中"}
             </p>
           </div>
         </div>
+        <button
+          onClick={() => {
+            fetchInfo();
+          }}
+          type="button"
+          className="btn btn-light"
+          style={{ marginBottom: "1rem" }}
+        >
+          最新の情報に更新
+        </button>
         <h1>電力制限</h1>
         <p style={{ fontSize: "5rem", margin: "-1rem 0 -1rem 0" }}>
           {powerLimit > 0 ? powerLimit : "取得中"}
