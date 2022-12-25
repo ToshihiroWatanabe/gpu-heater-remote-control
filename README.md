@@ -1,6 +1,7 @@
 # gpu-heater-remote-control
+![demo](https://user-images.githubusercontent.com/79039863/209477040-eb4d2a49-b1cb-4c78-90f0-00742be7c566.gif)
 
-GPUの排熱を暖房として使うためのリモコンです。
+GPUの排熱を暖房として使うためのリモコンアプリです。
 
 スマホ等からGPUの電力制限ができます。
 
