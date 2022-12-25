@@ -9,6 +9,8 @@ const axiosInstance = axios.create({
   baseURL: `http://${publicRuntimeConfig.ipAddress}:${process.env.PORT}`,
 });
 
+let powerLimitRequestQueueCount = 0;
+
 export default function Index() {
   const [gpuCurrentTemp, setGpuCurrentTemp] = useState<number>(NaN);
   const [powerDraw, setPowerDraw] = useState<number>(NaN);
@@ -40,13 +42,25 @@ export default function Index() {
   const onRangeInputBlur = () => {
     setTemporaryRangeInputValue(NaN);
   };
-  const onRangeInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const onRangeInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    powerLimitRequestQueueCount += 1;
+    // レスポンスを受け取る順番が前後しないようにするための遅延
+    if (powerLimitRequestQueueCount >= 2) {
+      await new Promise((resolve) =>
+        setTimeout(resolve, powerLimitRequestQueueCount * 10)
+      );
+    }
+
     axiosInstance
       .get(`/api/pl?watt=${e.target.value}`, {
         responseType: "text",
       })
       .then(() => {
-        fetchInfo();
+        // すべてのリクエストを送信し終えてから情報を取得
+        powerLimitRequestQueueCount -= 1;
+        if (powerLimitRequestQueueCount == 0) {
+          fetchInfo();
+        }
       });
   };
 
