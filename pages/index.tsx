@@ -96,13 +96,16 @@ export default function Index() {
           }}
         >
           <div style={{ height: "1rem", marginBottom: "1rem" }}>
-            {temporaryRangeInputValue > 0 && temporaryRangeInputValue}
+            {!isNaN(temporaryRangeInputValue) && temporaryRangeInputValue}
           </div>
           <input
             onInput={(e: React.FocusEvent<HTMLInputElement>) =>
               onRangeInputFocus(e)
             }
-            onBlur={() => onRangeInputBlur()}
+            onClick={() => onRangeInputBlur()}
+            onTouchEnd={() => {
+              onRangeInputBlur();
+            }}
             onChange={(e) => onRangeInputChange(e)}
             disabled={!(powerLimit > 0)}
             type="range"
@@ -110,24 +113,20 @@ export default function Index() {
             min={minPowerLimit > 0 ? minPowerLimit : undefined}
             max={maxPowerLimit > 0 ? maxPowerLimit : undefined}
             step="5"
-            list="tickmarks"
             style={{ width: "240px", margin: "0" }}
             className="form-range"
           />
-          <datalist
-            id="tickmarks"
+          <div
             style={{
               display: "flex",
-              flexDirection: "column",
               justifyContent: "space-between",
-              writingMode: "vertical-lr",
               width: "240px",
               padding: "0",
             }}
           >
-            <option label="低"></option>
-            <option label="高"></option>
-          </datalist>
+            <span>低</span>
+            <span>高</span>
+          </div>
         </div>
       </main>
     </>
