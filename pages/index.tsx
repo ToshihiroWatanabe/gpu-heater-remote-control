@@ -1,13 +1,6 @@
 import Head from "next/head";
 import axios, { AxiosResponse } from "axios";
-import getConfig from "next/config";
 import { useEffect, useRef, useState } from "react";
-
-const { publicRuntimeConfig } = getConfig();
-
-const axiosInstance = axios.create({
-  baseURL: `http://${publicRuntimeConfig.ipAddress}:${process.env.PORT}`,
-});
 
 export default function Index() {
   const abortControllerRef = useRef(new AbortController());
@@ -25,7 +18,7 @@ export default function Index() {
   }, []);
 
   const fetchInfo = () => {
-    axiosInstance.get("/api/info").then((res: AxiosResponse<Info>) => {
+    axios.get("/api/info").then((res: AxiosResponse<Info>) => {
       setGpuCurrentTemp(res.data.gpuCurrentTemp);
       setPowerDraw(res.data.powerDraw);
       setPowerLimit(res.data.powerLimit);
@@ -48,7 +41,7 @@ export default function Index() {
       await new Promise((resolve) => setTimeout(resolve, 10));
     }
     abortControllerRef.current = new AbortController();
-    axiosInstance
+    axios
       .get(`/api/pl?watt=${e.target.value}`, {
         responseType: "text",
         signal: abortControllerRef.current.signal,

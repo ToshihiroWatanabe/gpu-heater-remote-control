@@ -11,7 +11,7 @@ export default async function infoApi(
   req: NextApiRequest,
   res: NextApiResponse<Info | { error: string }>
 ) {
-  const result = await exec("powershell nvidia-smi -q");
+  const result = await exec("powershell.exe nvidia-smi -q");
   if (result.stderr) {
     console.error(result.stderr);
     res.status(500).json({ error: result.stderr });

@@ -12,7 +12,7 @@ export default async function powerLimitApi(
   res: NextApiResponse<string>
 ) {
   const watt = req.query.watt;
-  const result = await exec("powershell nvidia-smi -pl " + watt);
+  const result = await exec("powershell.exe nvidia-smi -pl " + watt);
   if (result.stderr) {
     console.error(result.stderr);
     res.status(500).send(result.stderr);
