@@ -29,6 +29,8 @@ npm install
 npm run dev
 ```
 
+[gpu-heater-remote-control.bat](/gpu-heater-remote-control.bat)を「管理者として実行」することでも起動できます。
+
 起動後、`http://<PCのローカルIPアドレス>:<ポート>`にアクセスしてください。
 
 # License
